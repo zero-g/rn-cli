@@ -89,18 +89,18 @@ program
     .command('lint [file]')
     .allowUnknownOption(true)
     .description('use eslint to check file')
-    .option("-nw, --nowatch", "disable lint when file changed")
+    .option("--watch", "lint when file changed. default: false")
     .action(function(){
-        if (process.argv.indexOf('-nw') > 0 || process.argv.indexOf('--nowatch') > 0) {
-            eslint.init();
-        } else {
+        if (process.argv.indexOf('--watch') > 0) {
             eslint.initWithWatch();
+        } else {
+            eslint.init();
         }
     }).on('--help', function() {
         console.log('  Examples:');
         console.log();
         console.log('    $ rn lint index.ios.js');
-        console.log('    $ rn lint app');
+        console.log('    $ rn lint app --watch');
         console.log();
     });
 

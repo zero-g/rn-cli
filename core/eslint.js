@@ -5,7 +5,7 @@ var chokidar = require('chokidar');
 
 let lint = {
     execLint: function(filesOrDirs) {
-        let args = process.argv.slice(3);
+        let args = this.getArgv();
         //输入默认参数
         if (args.indexOf('--color') === -1) {
             args.push('--color');
@@ -14,7 +14,7 @@ let lint = {
         if (filesOrDirs) {
             args = args.concat(filesOrDirs);
         }
-        console.log('==========eslint start========== ');
+        console.log('==========eslint start==========');
         exec('./node_modules/eslint/bin/eslint.js ' + args.join(' '), function(e, stdout, stderr) {
             if (e) {
                 console.log(stdout);
@@ -28,9 +28,16 @@ let lint = {
     init: function() {
         this.execLint();
     },
-    getFilesOrDirsFromArgv: function() {
+    getArgv: function() {
         let arr = process.argv.slice(3);
+        if (arr.indexOf('--watch') !== -1) {
+            arr.splice(arr.indexOf('--watch'),1);
+        }
+        return arr;
+    },
+    getFilesOrDirsFromArgv: function() {
         let filterArr = [];
+        let arr = this.getArgv();
         arr.map(function(item) {
             if (!/^-.*/.test(item)) {
                 filterArr.push(item);
