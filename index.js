@@ -1,10 +1,12 @@
 #! /usr/bin/env node
-/**
- * Module dependencies.
- */
+'use strict';
+
 var program = require('commander');
 var colors = require('colors');
 var generatorInit = require('./generator/index');
+var eslint = require('./core/eslint');
+var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 
 program
     .version('0.0.1')
@@ -62,18 +64,38 @@ program
     .alias('s')
     .description('运行react-native  + eslint')
     .action(function(cmd, options){
-        console.log('exec "%s" using %s mode', cmd, options.exec_mode);
+        let reactNativeStart = spawn('react-native', ['start']);
+        reactNativeStart.stdout.on('data', function (data) {
+            console.log(data.toString());
+        });
+
+        reactNativeStart.stderr.on('data', function (data) {
+            console.log(data.toString());
+        });
+
+        reactNativeStart.on('exit', function (code) {
+            console.log('child process exited with code ' + code.toString());
+        });
+        eslint.initWithWatch();
+        process.on('SIGTERM', function() {
+            reactNativeStart.kill(9);
+            // todo sth
+            process.exit(0);
+        });
     });
 
 // rn lint
 program
     .command('lint [file]')
+    .allowUnknownOption(true)
     .description('use eslint to check file')
-    .option("-d, --dir [dir]", "Which directory will use eslint")
-    .action(function(env, options){
-        var mode = options.setup_mode || "normal";
-        env = env || 'all';
-        console.log('setup for %s env(s) with %s mode', env, mode);
+    .option("-nw, --nowatch", "disable lint when file changed")
+    .action(function(){
+        if (process.argv.indexOf('-nw') > 0 || process.argv.indexOf('--nowatch') > 0) {
+            eslint.init();
+        } else {
+            eslint.initWithWatch();
+        }
     }).on('--help', function() {
         console.log('  Examples:');
         console.log();
