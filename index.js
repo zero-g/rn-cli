@@ -4,6 +4,7 @@
  */
 var program = require('commander');
 var colors = require('colors');
+var generatorInit = require('./generator/index');
 
 program
     .version('0.0.1')
@@ -33,6 +34,8 @@ program
     .description('create react-native javascript module')
     .option("-t, --type [type]", "Which template to use? [view/tool/service]")
     .action(function(name, options){
+        //console.log('commander ------------module ', name, options);
+        generatorInit('module', name, []);
     });
 
 // rn iosmodule/im xx.js
