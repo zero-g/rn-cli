@@ -1,6 +1,6 @@
 {
   "name": "rn-cli",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "rn辅助工具",
   "main": "index.js",
   "bin": {
@@ -17,5 +17,9 @@
     "react-native"
   ],
   "author": "lishaoyuan",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "commander": "^2.9.0"
+  }
 }
